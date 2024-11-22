@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Storage } from '@ionic/storage-angular';
 import { Router } from '@angular/router';
 
 @Injectable({

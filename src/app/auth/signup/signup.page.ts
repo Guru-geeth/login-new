@@ -5,13 +5,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import {Auth,signInWithPopup, GoogleAuthProvider} from '@angular/fire/auth'
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
   standalone:true,
-  imports:[IonicModule,FormsModule,ReactiveFormsModule,HttpClientModule],
+  imports:[IonicModule,FormsModule,ReactiveFormsModule,HttpClientModule,CommonModule],
   providers:[AuthService]
 })
 export class SignupPage {
@@ -20,22 +21,12 @@ export class SignupPage {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private auth:Auth
   ) {}
-
-  // signup() {
-  //   if (this.signupForm.valid && this.signupForm.value.password === this.signupForm.value.confirmPassword) {
-  //     const { email, password } = this.signupForm.value;
-  //     this.authService.signup(email, password).subscribe({
-  //       next: () => this.router.navigate(['/login']),
-  //       error: (err) => console.error(err)
-  //     });
-  //   } else {
-  //     alert('Passwords do not match!');
-  //   }
-  // }
   email='';
   password='';
   confirmPassword='';
+  isGoogleSignUp = false;
   signUp(){
     if(this.password===this.confirmPassword&&this.email.length!=0){
       this.authService.signup(this.email,this.password).subscribe({
@@ -45,6 +36,28 @@ export class SignupPage {
       })
     }else{
       alert("invalid inputs or passwords not matching")
+    }
+  }
+  async signUpWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(this.auth, provider);
+      console.log('User signed up with:', result.user);
+      this.email = result.user.email || ''; 
+      this.isGoogleSignUp = true; 
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  submitGooglePassword() {
+    if (this.password ===this.confirmPassword) {
+      this.authService.signup(this.email, this.password).subscribe({
+        next: () => this.router.navigate(['/login']),
+        error: (err) => console.log(err),
+      });
+    } else {
+      alert('Please enter a password to complete signup');
     }
   }
 }

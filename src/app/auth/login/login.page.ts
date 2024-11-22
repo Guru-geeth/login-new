@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -19,7 +18,6 @@ export class LoginPage {
   email='';
   password='';
   constructor(private authService:AuthService,private router:Router){
-
   }
   login(){
     if(this.email&&this.password){
@@ -27,9 +25,11 @@ export class LoginPage {
         next:(res:any)=>{
           this.authService.saveToken(res.access_token);
           console.log(res.access_token);
-          // this.router.navigate(['/dashboard'])
         }
       })
     }
+  }
+  signUp(){
+    this.router.navigate(['/signup']);
   }
 }
